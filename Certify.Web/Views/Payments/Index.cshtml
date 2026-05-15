@@ -1,0 +1,75 @@
+@model IEnumerable<dynamic>
+@{
+    ViewData["Title"] = "Payment Tracking";
+}
+
+<div class="container mt-4">
+    <div class="page-header">
+        <div>
+            <h2>Payment Tracking</h2>
+            <p class="subtitle">Trainees with outstanding balances on confirmed enrollments.</p>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-success">
+            <i class="bi bi-check-circle me-2"></i>
+            All trainees are fully paid up. No outstanding balances.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Trainee</th>
+                        <th>Email</th>
+                        <th class="text-end">Total Owed</th>
+                        <th class="text-end">Paid</th>
+                        <th class="text-end">Outstanding</th>
+                        <th>Status</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var row in Model)
+                    {
+                        <tr>
+                            <td><strong>@row.User.FullName</strong></td>
+                            <td class="text-muted">@row.User.Email</td>
+                            <td class="text-end">BHD @row.Owed.ToString("F2")</td>
+                            <td class="text-end text-success">BHD @row.Paid.ToString("F2")</td>
+                            <td class="text-end">
+                                <strong class="@(row.Outstanding > 0 ? "text-danger" : "text-success")">
+                                    BHD @row.Outstanding.ToString("F2")
+                                </strong>
+                            </td>
+                            <td>
+                                @if (row.Overdue)
+                                {
+                                    <span class="badge bg-danger">Overdue</span>
+                                }
+                                else if (row.Outstanding > 0)
+                                {
+                                    <span class="badge bg-warning text-dark">Partial</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success">Paid</span>
+                                }
+                            </td>
+                            <td class="text-end">
+                                <a asp-action="Record" asp-route-traineeId="@row.User.Id"
+                                   class="btn btn-sm btn-primary">
+                                    <i class="bi bi-cash-coin me-1"></i> Record Payment
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

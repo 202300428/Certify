@@ -1,0 +1,61 @@
+﻿@{
+    ViewData["Title"] = "Verify Certificate";
+}
+
+<div class="hero">
+    <div class="container">
+        <h1>Verify a Certification</h1>
+        <p>Confirm the authenticity of a Certify certification issued to a trainee.</p>
+    </div>
+</div>
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6">
+            <div class="card form-card">
+                <div class="card-body">
+                    <h3 class="card-title mb-3">Enter Verification Details</h3>
+                    <p class="text-muted small mb-4">
+                        Provide the trainee's email and the certificate reference number printed on their certification.
+                    </p>
+
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-danger">
+                            @ViewBag.Error
+                        </div>
+                    }
+
+                    <form method="post" asp-action="Index">
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-3">
+                            <label class="form-label">Trainee Email</label>
+                            <input name="traineeEmail" type="email" class="form-control"
+                                   placeholder="trainee@example.com" required />
+                            <small class="text-muted">The email address the trainee registered with.</small>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Certificate Reference Number</label>
+                            <input name="certificateNumber" class="form-control"
+                                   placeholder="CERT-2026-XXXXXXXX" required />
+                            <small class="text-muted">Found on the trainee's certification document.</small>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">Verify Certificate</button>
+                            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="text-center mt-3">
+                <small class="text-muted">
+                    This is a public verification tool — no account required.
+                </small>
+            </div>
+        </div>
+    </div>
+</div>

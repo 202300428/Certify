@@ -1,0 +1,74 @@
+@model Certify.API.Models.Payment
+@{
+    var trainee = (Certify.API.Models.ApplicationUser)ViewBag.Trainee;
+    var outstanding = (decimal)(ViewBag.Outstanding ?? 0m);
+    ViewData["Title"] = $"Record Payment — {trainee.FullName}";
+}
+
+<div class="container mt-4">
+    <a asp-action="Index" class="back-link"><i class="bi bi-arrow-left"></i> Back to payments</a>
+
+    <div class="page-header">
+        <div>
+            <h2>Record Payment</h2>
+            <p class="subtitle">
+                Trainee: <strong>@trainee.FullName</strong> &middot; @trainee.Email
+            </p>
+        </div>
+    </div>
+
+    <div class="alert alert-info py-2">
+        <i class="bi bi-info-circle me-2"></i>
+        Outstanding balance: <strong>BHD @outstanding.ToString("F2")</strong>
+    </div>
+
+    <div class="card form-card">
+        <div class="card-body">
+            <form asp-action="Record" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="TraineeId" />
+
+                <div asp-validation-summary="All" class="alert alert-danger py-2 validation-summary-valid"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Amount" class="form-label">Amount (BHD)</label>
+                    <input asp-for="Amount" type="number" step="0.01" min="0.01"
+                           max="@outstanding" class="form-control" required />
+                    <small class="text-muted">Maximum: BHD @outstanding.ToString("F2")</small>
+                    <span asp-validation-for="Amount" class="text-danger small d-block"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="PaymentDate" class="form-label">Payment Date</label>
+                    <input asp-for="PaymentDate" type="datetime-local" class="form-control" required />
+                    <span asp-validation-for="PaymentDate" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Status" class="form-label">Status</label>
+                    <select asp-for="Status" class="form-select">
+                        <option value="Completed">Completed</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Failed">Failed</option>
+                    </select>
+                    <span asp-validation-for="Status" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label">Description (optional)</label>
+                    <input asp-for="Description" class="form-control" placeholder="e.g. Course fee — C# Fundamentals" />
+                    <span asp-validation-for="Description" class="text-danger small"></span>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-success"><i class="bi bi-check2 me-1"></i> Record Payment</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,74 @@
+@model Certify.API.Models.ScheduledSession
+@{
+    ViewData["Title"] = Model.Course?.Title;
+    var spotsLeft = Model.Capacity - (int)ViewBag.EnrolledCount;
+}
+
+<div class="container mt-4">
+    <a asp-action="Index" class="back-link"><i class="bi bi-arrow-left"></i> Back to catalog</a>
+
+    <div class="page-header">
+        <div>
+            <h2>@Model.Course?.Title</h2>
+            <p class="subtitle">
+                <span class="badge bg-secondary me-1">@Model.Course?.Category</span>
+                @Model.Course?.DurationHours hours &middot; BHD @Model.Course?.Fee
+            </p>
+        </div>
+    </div>
+
+    @if (Model.Course?.PrerequisiteCourse != null)
+    {
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle me-2"></i>
+            <strong>Prerequisite:</strong> @Model.Course.PrerequisiteCourse.Title
+        </div>
+    }
+
+    <div class="card detail-card mb-3">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Instructor</dt>
+                <dd class="col-sm-9">@Model.Instructor?.Name</dd>
+
+                <dt class="col-sm-3">Room</dt>
+                <dd class="col-sm-9">@Model.Room?.Name</dd>
+
+                <dt class="col-sm-3">Starts</dt>
+                <dd class="col-sm-9">@Model.StartDateTime.ToString("MMM dd, yyyy HH:mm")</dd>
+
+                <dt class="col-sm-3">Ends</dt>
+                <dd class="col-sm-9">@Model.EndDateTime.ToString("MMM dd, yyyy HH:mm")</dd>
+
+                <dt class="col-sm-3">Capacity</dt>
+                <dd class="col-sm-9">
+                    <span id="enrolledCount">@ViewBag.EnrolledCount</span> / @Model.Capacity enrolled
+                    <span class="badge bg-success ms-2"><span id="spotsLeft">@spotsLeft</span> spots left</span>
+                </dd>
+            </dl>
+        </div>
+    </div>
+
+    <form asp-controller="Enrollments" asp-action="Enroll" method="post" class="d-flex gap-2">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="sessionId" value="@Model.Id" />
+        <button type="submit" class="btn btn-success"><i class="bi bi-check2-circle me-1"></i> Enroll</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Back</a>
+    </form>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+    <script>
+        const sessionId = @Model.Id;
+        const capacity = @Model.Capacity;
+        const conn = new signalR.HubConnectionBuilder().withUrl("/courseHub").build();
+        conn.on("EnrollmentCountChanged", (sid, newCount) => {
+            if (sid === sessionId) {
+                document.getElementById("enrolledCount").textContent = newCount;
+                document.getElementById("spotsLeft").textContent = capacity - newCount;
+            }
+        });
+        conn.start().catch(err => console.error(err));
+    </script>
+}

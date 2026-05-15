@@ -1,0 +1,81 @@
+﻿@model IEnumerable<Certify.API.Models.ScheduledSession>
+@{
+    ViewData["Title"] = "Browse Courses";
+}
+
+<div class="hero">
+    <div class="container">
+        <h1>Certification Courses</h1>
+        <p>Our certification programs help take your skills to the next level.</p>
+    </div>
+</div>
+
+<div class="container mt-4">
+    <!-- Filter bar -->
+    <form asp-action="Index" method="get" class="filter-bar">
+        <div class="row align-items-center">
+            <div class="col-md-5">
+                <label class="filter-label">Search</label>
+                <input name="search" value="@ViewBag.Search" class="form-control" placeholder="Course title..." />
+            </div>
+            <div class="col-md-4">
+                <label class="filter-label">Sort by category</label>
+                <select name="category" class="form-select">
+                    <option value="">All categories</option>
+                    @foreach (var c in (IEnumerable<string>)ViewBag.Categories)
+                    {
+                        <option value="@c" selected="@(c == (string?)ViewBag.Category)">@c</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3 d-flex gap-2 align-items-end">
+                <button type="submit" class="btn btn-primary">Apply</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Clear</a>
+            </div>
+        </div>
+    </form>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">No upcoming sessions match your search.</div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var session in Model)
+            {
+                    var icon = session.Course?.Category switch
+                    {
+                        "Development" => "💻",
+                        "Design" => "🎨",
+                        "Data" => "📊",
+                        _ => "🎓"
+                    };
+
+
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card course-card h-100">
+                        <div class="card-body d-flex flex-column">
+                            <span class="free-badge">@session.Course?.Category</span>
+                            <div class="course-icon">@icon</div>
+                            <h5 class="card-title">@session.Course?.Title</h5>
+                            <p class="text-muted small mb-2">
+                                With @session.Instructor?.Name
+                            </p>
+                            <ul>
+                                <li>@session.Course?.DurationHours Hours</li>
+                                <li>@session.Capacity Seats</li>
+                                <li>BHD @session.Course?.Fee</li>
+                                <li>Starts @session.StartDateTime.ToString("MMM dd")</li>
+                            </ul>
+                            <a asp-action="Details" asp-route-id="@session.Id"
+                               class="btn btn-primary mt-auto">
+                                Get Certified
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

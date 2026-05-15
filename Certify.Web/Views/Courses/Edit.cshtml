@@ -1,0 +1,80 @@
+@model Certify.API.Models.Course
+
+@{
+    ViewData["Title"] = "Edit Course";
+}
+
+<div class="container mt-4">
+    <a asp-action="Index" class="back-link"><i class="bi bi-arrow-left"></i> Back to courses</a>
+
+    <div class="page-header">
+        <div>
+            <h2>Edit Course</h2>
+            <p class="subtitle">Update catalog details. Existing sessions and enrollments remain linked.</p>
+        </div>
+    </div>
+
+    <div class="card form-card">
+        <div class="card-body">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2"></div>
+                <input type="hidden" asp-for="Id" />
+
+                <div class="mb-3">
+                    <label asp-for="Title" class="form-label"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label"></label>
+                    <input asp-for="Description" class="form-control" />
+                    <span asp-validation-for="Description" class="text-danger small"></span>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Category" class="form-label"></label>
+                        <input asp-for="Category" class="form-control" />
+                        <span asp-validation-for="Category" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Fee" class="form-label">Fee (BHD)</label>
+                        <input asp-for="Fee" class="form-control" />
+                        <span asp-validation-for="Fee" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Capacity" class="form-label"></label>
+                        <input asp-for="Capacity" class="form-control" />
+                        <span asp-validation-for="Capacity" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="DurationHours" class="form-label">Duration (hours)</label>
+                        <input asp-for="DurationHours" class="form-control" />
+                        <span asp-validation-for="DurationHours" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="PrerequisiteCourseId" class="form-label">Prerequisite</label>
+                    <select asp-for="PrerequisiteCourseId" class="form-select" asp-items="ViewBag.PrerequisiteCourseId">
+                        <option value="">— None —</option>
+                    </select>
+                    <span asp-validation-for="PrerequisiteCourseId" class="text-danger small"></span>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-save me-1"></i> Save Changes</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

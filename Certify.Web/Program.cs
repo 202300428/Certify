@@ -40,7 +40,14 @@ builder.Services.AddHttpClient("CertifyApi", client =>
 // SignalR for the live enrollment counter
 builder.Services.AddSignalR();
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+    .ConfigureApplicationPartManager(apm =>
+    {
+        // Remove the API project's controllers — they were loaded via the project reference
+        // but we only want MVC-side controllers here.
+        var apiPart = apm.ApplicationParts.FirstOrDefault(p => p.Name == "Certify.API");
+        if (apiPart != null) apm.ApplicationParts.Remove(apiPart);
+    });
 
 var app = builder.Build();
 

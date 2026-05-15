@@ -1,5 +1,113 @@
-﻿@{
+@{
     ViewData["Title"] = "Coordinator Dashboard";
 }
-<h2>Coordinator Dashboard</h2>
-<p>Welcome. Use the navigation above to manage courses, rooms, instructors, sessions, and payments.</p>
+
+<div class="container mt-4">
+    <div class="page-header">
+        <div>
+            <h2>Training Operations</h2>
+            <p class="subtitle">Manage the catalog, schedule sessions, assign instructors, and track payments.</p>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-md-6 col-lg-3">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bi bi-journal-bookmark"></i></div>
+                <div>
+                    <div class="stat-label">Catalog</div>
+                    <div class="stat-value">Courses</div>
+                    <div class="stat-hint">Titles, fees, prerequisites</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bi bi-calendar-event"></i></div>
+                <div>
+                    <div class="stat-label">Schedule</div>
+                    <div class="stat-value">Sessions</div>
+                    <div class="stat-hint">Run dates &amp; assignments</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bi bi-people"></i></div>
+                <div>
+                    <div class="stat-label">Staff</div>
+                    <div class="stat-value">Instructors</div>
+                    <div class="stat-hint">Expertise &amp; contact</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bi bi-credit-card"></i></div>
+                <div>
+                    <div class="stat-label">Finance</div>
+                    <div class="stat-value">Payments</div>
+                    <div class="stat-hint">Outstanding balances</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="section-title">Quick actions</h3>
+    <div class="row g-3">
+        <div class="col-md-6 col-lg-4">
+            <a asp-controller="Courses" asp-action="Create" class="action-tile">
+                <div class="action-icon"><i class="bi bi-plus-circle"></i></div>
+                <div>
+                    <h6>Add New Course</h6>
+                    <small>Define a course in the catalog</small>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <a asp-controller="Sessions" asp-action="Create" class="action-tile">
+                <div class="action-icon"><i class="bi bi-calendar-plus"></i></div>
+                <div>
+                    <h6>Schedule a Session</h6>
+                    <small>Assign instructor &amp; room</small>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <a asp-controller="Rooms" asp-action="Create" class="action-tile">
+                <div class="action-icon"><i class="bi bi-door-open"></i></div>
+                <div>
+                    <h6>Add a Room</h6>
+                    <small>Capacity &amp; equipment</small>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <a asp-controller="Instructors" asp-action="Create" class="action-tile">
+                <div class="action-icon"><i class="bi bi-person-plus"></i></div>
+                <div>
+                    <h6>Add an Instructor</h6>
+                    <small>Register a new teacher</small>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <a asp-controller="Payments" asp-action="Index" class="action-tile">
+                <div class="action-icon"><i class="bi bi-cash-coin"></i></div>
+                <div>
+                    <h6>Review Payments</h6>
+                    <small>Track outstanding balances</small>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <a asp-controller="Courses" asp-action="Index" class="action-tile">
+                <div class="action-icon"><i class="bi bi-list-ul"></i></div>
+                <div>
+                    <h6>Browse Catalog</h6>
+                    <small>Full course list &amp; filters</small>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>

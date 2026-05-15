@@ -1,51 +1,59 @@
-﻿@model Certify.Web.Models.RegisterViewModel
+@model Certify.Web.Models.RegisterViewModel
 @{
     ViewData["Title"] = "Register";
 }
 
-<div class="row justify-content-center mt-5">
-    <div class="col-md-6">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h3 class="card-title text-center mb-4">Create a Trainee account</h3>
-                <form asp-action="Register" method="post">
-                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-2"></div>
+<div class="container mt-4">
+    <div class="page-header justify-content-center text-center">
+        <div>
+            <h2>Create a Trainee Account</h2>
+            <p class="subtitle">Join Certify to enroll in courses and earn industry-recognized certifications.</p>
+        </div>
+    </div>
 
-                    <div class="mb-3">
-                        <label asp-for="FullName" class="form-label"></label>
-                        <input asp-for="FullName" class="form-control" />
-                        <span asp-validation-for="FullName" class="text-danger small"></span>
-                    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6">
+            <div class="card form-card">
+                <div class="card-body">
+                    <form asp-action="Register" method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2"></div>
 
-                    <div class="mb-3">
-                        <label asp-for="Email" class="form-label"></label>
-                        <input asp-for="Email" class="form-control" autocomplete="email" />
-                        <span asp-validation-for="Email" class="text-danger small"></span>
-                    </div>
+                        <div class="mb-3">
+                            <label asp-for="FullName" class="form-label"></label>
+                            <input asp-for="FullName" class="form-control" />
+                            <span asp-validation-for="FullName" class="text-danger small"></span>
+                        </div>
 
-                    <div class="mb-3">
-                        <label asp-for="CPR" class="form-label"></label>
-                        <input asp-for="CPR" class="form-control" />
-                        <span asp-validation-for="CPR" class="text-danger small"></span>
-                    </div>
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label"></label>
+                            <input asp-for="Email" class="form-control" autocomplete="email" />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
 
-                    <div class="mb-3">
-                        <label asp-for="Password" class="form-label"></label>
-                        <input asp-for="Password" class="form-control" autocomplete="new-password" />
-                        <span asp-validation-for="Password" class="text-danger small"></span>
-                    </div>
+                        <div class="mb-3">
+                            <label asp-for="CPR" class="form-label"></label>
+                            <input asp-for="CPR" class="form-control" />
+                            <span asp-validation-for="CPR" class="text-danger small"></span>
+                        </div>
 
-                    <div class="mb-3">
-                        <label asp-for="ConfirmPassword" class="form-label"></label>
-                        <input asp-for="ConfirmPassword" class="form-control" autocomplete="new-password" />
-                        <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
-                    </div>
+                        <div class="mb-3">
+                            <label asp-for="Password" class="form-label"></label>
+                            <input asp-for="Password" class="form-control" autocomplete="new-password" />
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
 
-                    <button type="submit" class="btn btn-success w-100">Register</button>
-                    <p class="text-center mt-3 mb-0">
-                        Already have an account? <a asp-action="Login">Sign in</a>
-                    </p>
-                </form>
+                        <div class="mb-3">
+                            <label asp-for="ConfirmPassword" class="form-label"></label>
+                            <input asp-for="ConfirmPassword" class="form-control" autocomplete="new-password" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100"><i class="bi bi-person-plus me-1"></i> Register</button>
+                        <p class="text-center mt-3 mb-0">
+                            Already have an account? <a asp-action="Login">Sign in</a>
+                        </p>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

@@ -1,0 +1,62 @@
+@model IEnumerable<Certify.API.Models.Notification>
+@{
+    ViewData["Title"] = "Notifications";
+    var unreadCount = Model.Count(n => !n.IsRead);
+}
+
+<div class="container mt-4">
+    <div class="page-header">
+        <div>
+            <h2>Notifications</h2>
+            <p class="subtitle">
+                @if (unreadCount > 0)
+                {
+                    <span>You have <strong>@unreadCount</strong> unread notification@(unreadCount == 1 ? "" : "s").</span>
+                }
+                else
+                {
+                    <span>All caught up.</span>
+                }
+            </p>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            <i class="bi bi-bell me-2"></i>You have no notifications yet.
+        </div>
+    }
+    else
+    {
+        <div class="card">
+            <div class="list-group list-group-flush">
+                @foreach (var n in Model)
+                {
+                    <div class="list-group-item @(n.IsRead ? "" : "border-start border-3 border-warning")">
+                        <div class="d-flex w-100 justify-content-between align-items-start">
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1">
+                                    @n.Title
+                                    @if (!n.IsRead)
+                                    {
+                                        <span class="badge bg-primary ms-2">New</span>
+                                    }
+                                </h6>
+                                <p class="mb-1">@n.Message</p>
+                                <small class="text-muted"><i class="bi bi-clock me-1"></i>@n.CreatedAt.ToString("MMM dd, yyyy HH:mm")</small>
+                            </div>
+                            @if (!n.IsRead)
+                            {
+                                <form asp-action="MarkRead" asp-route-id="@n.Id" method="post" class="ms-3">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-outline-primary">Mark read</button>
+                                </form>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>

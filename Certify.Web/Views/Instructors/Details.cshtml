@@ -1,0 +1,35 @@
+@model Certify.API.Models.Instructor
+
+@{
+    ViewData["Title"] = Model.Name ?? "Instructor Details";
+}
+
+<div class="container mt-4">
+    <a asp-action="Index" class="back-link"><i class="bi bi-arrow-left"></i> Back to instructors</a>
+
+    <div class="page-header">
+        <div>
+            <h2>@Model.Name</h2>
+            <p class="subtitle">Instructor profile.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary"><i class="bi bi-pencil me-1"></i> Edit</a>
+            <a asp-action="Index" class="btn btn-outline-secondary">Back</a>
+        </div>
+    </div>
+
+    <div class="card detail-card">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Name)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Name)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Email)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Email)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.ExpertiseAreas)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.ExpertiseAreas)</dd>
+            </dl>
+        </div>
+    </div>
+</div>

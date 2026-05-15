@@ -1,0 +1,78 @@
+@model Certify.API.Models.ScheduledSession
+
+@{
+    ViewData["Title"] = "Schedule Session";
+}
+
+<div class="container mt-4">
+    <a asp-action="Index" class="back-link"><i class="bi bi-arrow-left"></i> Back to sessions</a>
+
+    <div class="page-header">
+        <div>
+            <h2>Schedule a Session</h2>
+            <p class="subtitle">Pair a course with an instructor, room, and date range.</p>
+        </div>
+    </div>
+
+    <div class="card form-card">
+        <div class="card-body">
+            <form asp-action="Create">
+                <div asp-validation-summary="All" class="alert alert-danger py-2 validation-summary-valid"></div>
+
+                <div class="mb-3">
+                    <label asp-for="CourseId" class="form-label">Course</label>
+                    <select asp-for="CourseId" asp-items="ViewBag.Courses" class="form-select">
+                        <option value="">— Select Course —</option>
+                    </select>
+                    <span asp-validation-for="CourseId" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="InstructorId" class="form-label">Instructor</label>
+                    <select asp-for="InstructorId" asp-items="ViewBag.Instructors" class="form-select">
+                        <option value="">— Select Instructor —</option>
+                    </select>
+                    <span asp-validation-for="InstructorId" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="RoomId" class="form-label">Room</label>
+                    <select asp-for="RoomId" asp-items="ViewBag.Rooms" class="form-select">
+                        <option value="">— Select Room —</option>
+                    </select>
+                    <span asp-validation-for="RoomId" class="text-danger small"></span>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="StartDateTime" class="form-label">Starts</label>
+                        <input asp-for="StartDateTime" class="form-control" />
+                        <span asp-validation-for="StartDateTime" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="EndDateTime" class="form-label">Ends</label>
+                        <input asp-for="EndDateTime" class="form-control" />
+                        <span asp-validation-for="EndDateTime" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Capacity" class="form-label"></label>
+                    <input asp-for="Capacity" class="form-control" />
+                    <span asp-validation-for="Capacity" class="text-danger small"></span>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-check2 me-1"></i> Create Session</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

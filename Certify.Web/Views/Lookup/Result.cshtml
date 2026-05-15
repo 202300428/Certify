@@ -1,0 +1,54 @@
+@model Certify.Web.Controllers.CertificationResult
+@{
+    ViewData["Title"] = "Certification Verified";
+}
+
+<div class="container mt-4">
+    <div class="page-header">
+        <div>
+            <h2><i class="bi bi-patch-check-fill text-success me-2"></i>Certification Verified</h2>
+            <p class="subtitle">This certification was retrieved directly from the issuing provider's records.</p>
+        </div>
+        <span class="badge bg-success align-self-center">@Model.Status</span>
+    </div>
+
+    <div class="card detail-card">
+        <div class="card-body">
+            <dl class="row mb-0">
+                <dt class="col-sm-3">Trainee Name</dt>
+                <dd class="col-sm-9">@Model.TraineeName</dd>
+
+                <dt class="col-sm-3">Certification Track</dt>
+                <dd class="col-sm-9"><strong>@Model.Track</strong></dd>
+
+                <dt class="col-sm-3">Issue Date</dt>
+                <dd class="col-sm-9">@Model.IssueDate.ToString("MMMM dd, yyyy")</dd>
+
+                <dt class="col-sm-3">Status</dt>
+                <dd class="col-sm-9"><span class="badge bg-success">@Model.Status</span></dd>
+
+                <dt class="col-sm-3">Completed Courses</dt>
+                <dd class="col-sm-9">
+                    @if (Model.CompletedCourses.Any())
+                    {
+                        <ul class="list-unstyled mb-0">
+                            @foreach (var course in Model.CompletedCourses)
+                            {
+                                <li><i class="bi bi-check2-circle text-success me-1"></i> @course</li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <span class="text-muted">No completed courses recorded.</span>
+                    }
+                </dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="text-center mt-4 d-flex justify-content-center gap-2">
+        <a asp-action="Index" class="btn btn-outline-primary"><i class="bi bi-search me-1"></i> Verify Another</a>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">Home</a>
+    </div>
+</div>

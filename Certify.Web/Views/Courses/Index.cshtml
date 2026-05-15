@@ -1,0 +1,87 @@
+﻿@model IEnumerable<Certify.API.Models.Course>
+@{
+    ViewData["Title"] = "Courses";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>Course Catalog</h2>
+            <p class="text-muted mb-0">Manage the course catalog: titles, categories, fees, and prerequisites.</p>
+        </div>
+        <a asp-action="Create" class="btn btn-primary">+ Create New Course</a>
+    </div>
+
+    <form asp-action="Index" method="get" class="filter-bar">
+        <div class="row align-items-end">
+            <div class="col-md-5">
+                <label class="filter-label">Search</label>
+                <input name="search" value="@ViewBag.Search" class="form-control" placeholder="Course title..." />
+            </div>
+            <div class="col-md-4">
+                <label class="filter-label">Category</label>
+                <select name="category" class="form-select">
+                    <option value="">All categories</option>
+                    @foreach (var c in (IEnumerable<string>)ViewBag.Categories)
+                    {
+                        <option value="@c" selected="@(c == (string?)ViewBag.Category)">@c</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Filter</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Clear</a>
+            </div>
+        </div>
+    </form>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">No courses found.</div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th class="text-end">Fee (BHD)</th>
+                        <th class="text-center">Capacity</th>
+                        <th class="text-center">Duration (hrs)</th>
+                        <th>Prerequisite</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var course in Model)
+                    {
+                        <tr>
+                            <td><strong>@course.Title</strong></td>
+                            <td><span class="badge bg-secondary">@course.Category</span></td>
+                            <td class="text-end">@course.Fee.ToString("F2")</td>
+                            <td class="text-center">@course.Capacity</td>
+                            <td class="text-center">@course.DurationHours</td>
+                            <td>
+                                @if (course.PrerequisiteCourse != null)
+                                {
+                                    <span class="text-muted small">@course.PrerequisiteCourse.Title</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted small">—</span>
+                                }
+                            </td>
+                            <td class="text-end">
+                                <a asp-action="Details" asp-route-id="@course.Id" class="btn btn-sm btn-outline-secondary">Details</a>
+                                <a asp-action="Edit" asp-route-id="@course.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@course.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

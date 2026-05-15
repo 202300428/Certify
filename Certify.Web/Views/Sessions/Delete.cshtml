@@ -1,0 +1,52 @@
+@model Certify.API.Models.ScheduledSession
+
+@{
+    ViewData["Title"] = "Delete Session";
+}
+
+<div class="container mt-4">
+    <a asp-action="Index" class="back-link"><i class="bi bi-arrow-left"></i> Back to sessions</a>
+
+    <div class="page-header">
+        <div>
+            <h2>Delete Session</h2>
+            <p class="subtitle">This action cannot be undone. Existing enrollments will be affected.</p>
+        </div>
+    </div>
+
+    <div class="alert alert-warning">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        Are you sure you want to permanently delete the session for
+        <strong>@Model.Course?.Title</strong> on @Model.StartDateTime.ToString("MMM dd, yyyy")?
+    </div>
+
+    <div class="card detail-card mb-3">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Course</dt>
+                <dd class="col-sm-9">@Model.Course?.Title</dd>
+
+                <dt class="col-sm-3">Instructor</dt>
+                <dd class="col-sm-9">@Model.Instructor?.Name</dd>
+
+                <dt class="col-sm-3">Room</dt>
+                <dd class="col-sm-9">@Model.Room?.Name</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.StartDateTime)</dt>
+                <dd class="col-sm-9">@Model.StartDateTime.ToString("MMM dd, yyyy HH:mm")</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.EndDateTime)</dt>
+                <dd class="col-sm-9">@Model.EndDateTime.ToString("MMM dd, yyyy HH:mm")</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Capacity)</dt>
+                <dd class="col-sm-9">@Model.Capacity</dd>
+            </dl>
+        </div>
+    </div>
+
+    <form asp-action="Delete" class="d-flex gap-2">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger"><i class="bi bi-trash me-1"></i> Delete Session</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+    </form>
+</div>

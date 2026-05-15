@@ -1,0 +1,65 @@
+@model IEnumerable<Certify.API.Models.ScheduledSession>
+
+@{
+    ViewData["Title"] = "Sessions";
+}
+
+<div class="container mt-4">
+    <div class="page-header">
+        <div>
+            <h2>Scheduled Sessions</h2>
+            <p class="subtitle">Run instances of courses with assigned instructor, room, dates and capacity.</p>
+        </div>
+        <a asp-action="Create" class="btn btn-primary"><i class="bi bi-calendar-plus me-1"></i> Schedule Session</a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">No sessions have been scheduled yet.</div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Course</th>
+                        <th>Instructor</th>
+                        <th>Room</th>
+                        <th>Start</th>
+                        <th>End</th>
+                        <th class="text-center">Capacity</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <strong>@item.Course?.Title</strong><br />
+                                <small class="text-muted">@item.Course?.Category</small>
+                            </td>
+                            <td>@item.Instructor?.Name</td>
+                            <td>@item.Room?.Name</td>
+                            <td>
+                                @item.StartDateTime.ToString("MMM dd, yyyy")<br />
+                                <small class="text-muted">@item.StartDateTime.ToString("HH:mm")</small>
+                            </td>
+                            <td>
+                                @item.EndDateTime.ToString("MMM dd, yyyy")<br />
+                                <small class="text-muted">@item.EndDateTime.ToString("HH:mm")</small>
+                            </td>
+                            <td class="text-center">@item.Capacity</td>
+                            <td class="text-end">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Details</a>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
