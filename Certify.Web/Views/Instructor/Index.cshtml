@@ -1,0 +1,45 @@
+@{
+    ViewData["Title"] = "Instructor Dashboard";
+}
+
+<div class="container mt-4">
+    <div class="page-header">
+        <div>
+            <h2>Instructor Workspace</h2>
+            <p class="subtitle">Review your teaching schedule and record trainee assessment results.</p>
+        </div>
+        <a asp-controller="Instructor" asp-action="MySessions" class="btn btn-primary">
+            <i class="bi bi-calendar-week me-1"></i> Open My Sessions
+        </a>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-md-6 col-lg-4">
+            <a asp-controller="Instructor" asp-action="MySessions" class="action-tile">
+                <div class="action-icon"><i class="bi bi-calendar-event"></i></div>
+                <div>
+                    <h6>My Sessions</h6>
+                    <small>Upcoming, in-progress, past</small>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <a asp-controller="Instructor" asp-action="MySessions" class="action-tile">
+                <div class="action-icon"><i class="bi bi-clipboard-check"></i></div>
+                <div>
+                    <h6>Record Results</h6>
+                    <small>Open a session roster to record Pass / Fail</small>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <a asp-controller="Lookup" asp-action="Index" class="action-tile">
+                <div class="action-icon"><i class="bi bi-patch-check"></i></div>
+                <div>
+                    <h6>Verify Certificate</h6>
+                    <small>Public verification tool</small>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,76 @@
+@{
+    ViewData["Title"] = "Trainee Dashboard";
+}
+
+<div class="container mt-4">
+    <div class="page-header">
+        <div>
+            <h2>Welcome back, @User.Identity?.Name</h2>
+            <p class="subtitle">Pick up where you left off, or explore new courses to add to your learning path.</p>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bi bi-grid"></i></div>
+                <div>
+                    <div class="stat-label">Browse</div>
+                    <div class="stat-value">Catalog</div>
+                    <div class="stat-hint">Find upcoming sessions</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bi bi-bookmark-check"></i></div>
+                <div>
+                    <div class="stat-label">Track</div>
+                    <div class="stat-value">Enrollments</div>
+                    <div class="stat-hint">Status, payments, results</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bi bi-patch-check"></i></div>
+                <div>
+                    <div class="stat-label">Earn</div>
+                    <div class="stat-value">Certifications</div>
+                    <div class="stat-hint">Pass courses to unlock</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="section-title">Quick actions</h3>
+    <div class="row g-3">
+        <div class="col-md-6 col-lg-4">
+            <a asp-controller="Catalog" asp-action="Index" class="action-tile">
+                <div class="action-icon"><i class="bi bi-search"></i></div>
+                <div>
+                    <h6>Browse Courses</h6>
+                    <small>Discover certification programs</small>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <a asp-controller="Enrollments" asp-action="My" class="action-tile">
+                <div class="action-icon"><i class="bi bi-journal-text"></i></div>
+                <div>
+                    <h6>My Enrollments</h6>
+                    <small>View progress &amp; drop courses</small>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <a asp-controller="Notifications" asp-action="Index" class="action-tile">
+                <div class="action-icon"><i class="bi bi-bell"></i></div>
+                <div>
+                    <h6>Notifications</h6>
+                    <small>Results, certificates, updates</small>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>

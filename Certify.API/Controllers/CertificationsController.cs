@@ -14,24 +14,30 @@ public class CertificationsController(CertifyDbContext context) : ControllerBase
 {
 
     /// <summary>Publicly verifies a trainee's certification status without authentication. Intended for employer/third-party validation.</summary>
-    /// <param name="traineeId">Unique identifier of the trainee.</param>
+    /// <param name="traineeEmail">Email address of the trainee.</param>
     /// <param name="certRef">Certificate reference number to verify.</param>
     /// <returns>Certification details, trainee name, track name, issue date, and completed courses.</returns>
     /// <response code="200">Certification found and verified.</response>
-    /// <response code="404">Certificate reference or trainee ID not found.</response>
+    /// <response code="404">Certificate reference or trainee email not found.</response>
     [HttpGet("public")]
     [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> PublicLookup([FromQuery] string traineeId, [FromQuery] string certRef)
+    public async Task<IActionResult> PublicLookup([FromQuery] string traineeEmail, [FromQuery] string certRef)
     {
+        if (string.IsNullOrWhiteSpace(traineeEmail) || string.IsNullOrWhiteSpace(certRef))
+            return BadRequest(new { Message = "Both trainee email and certificate reference are required." });
+
         var cert = await context.Certifications
             .Include(c => c.Trainee)
             .Include(c => c.CertificationTrack)
                 .ThenInclude(ct => ct.TrackCourses)
             .Include(c => c.Trainee.Enrollments)
                 .ThenInclude(e => e.ScheduledSession)
-            .FirstOrDefaultAsync(c => c.TraineeId == traineeId && c.CertificateNumber == certRef);
+                    .ThenInclude(s => s.Course)
+            .FirstOrDefaultAsync(c =>
+                c.Trainee.Email == traineeEmail &&
+                c.CertificateNumber == certRef);
 
         if (cert == null) return NotFound(new { Message = "Certification not found." });
 

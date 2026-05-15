@@ -1,0 +1,163 @@
+@model IEnumerable<Certify.API.Models.Enrollment>
+@{
+    ViewData["Title"] = "My Enrollments";
+    var active = Model.Count(e => e.Status != "Completed" && e.Status != "Dropped");
+    var completed = Model.Count(e => e.Status == "Completed");
+    var dropped = Model.Count(e => e.Status == "Dropped");
+}
+
+<div class="container mt-4">
+    <div class="page-header">
+        <div>
+            <h2>My Enrollments</h2>
+            <p class="subtitle">Track your course history, payment status, and current progress.</p>
+        </div>
+        <a asp-controller="Catalog" asp-action="Index" class="btn btn-primary"><i class="bi bi-grid me-1"></i> Browse Catalog</a>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bi bi-hourglass-split"></i></div>
+                <div>
+                    <div class="stat-label">Active</div>
+                    <div class="stat-value">@active</div>
+                    <div class="stat-hint">Enrolled / attending</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bi bi-trophy"></i></div>
+                <div>
+                    <div class="stat-label">Completed</div>
+                    <div class="stat-value">@completed</div>
+                    <div class="stat-hint">Courses finished</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bi bi-x-circle"></i></div>
+                <div>
+                    <div class="stat-label">Dropped</div>
+                    <div class="stat-value">@dropped</div>
+                    <div class="stat-hint">Withdrawn enrollments</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle me-2"></i>
+            You haven't enrolled in any courses yet.
+            <a asp-controller="Catalog" asp-action="Index" class="alert-link">Browse the catalog</a> to get started.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Course</th>
+                        <th>Instructor</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Payment</th>
+                        <th>Result</th>
+                        <th class="text-end">Fee</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var e in Model)
+                    {
+                        <tr>
+                            <td>
+                                <strong>@e.ScheduledSession?.Course?.Title</strong><br />
+                                <small class="text-muted">@e.ScheduledSession?.Course?.Category</small>
+                            </td>
+                            <td>@e.ScheduledSession?.Instructor?.Name</td>
+                            <td>
+                                @e.ScheduledSession?.StartDateTime.ToString("MMM dd, yyyy")<br />
+                                <small class="text-muted">@e.ScheduledSession?.StartDateTime.ToString("HH:mm")</small>
+                            </td>
+                            <td>
+                                @{
+                                    var statusClass = e.Status switch
+                                    {
+                                        "Enrolled" => "bg-info text-dark",
+                                        "Confirmed" => "bg-primary",
+                                        "Attending" => "bg-warning text-dark",
+                                        "Completed" => "bg-success",
+                                        "Dropped" => "bg-secondary",
+                                        _ => "bg-light text-dark"
+                                    };
+                                }
+                                <span class="badge @statusClass">@e.Status</span>
+                            </td>
+                            <td>
+                                @{
+                                    var payClass = e.PaymentStatus switch
+                                    {
+                                        "Paid" => "bg-success",
+                                        "Partial" => "bg-warning text-dark",
+                                        "Pending" => "bg-danger",
+                                        _ => "bg-light text-dark"
+                                    };
+                                }
+                                <span class="badge @payClass">@e.PaymentStatus</span>
+                            </td>
+                            <td>
+                                @if (e.Result == "Pass")
+                                {
+                                    <span class="badge bg-success">Pass</span>
+                                }
+                                else if (e.Result == "Fail")
+                                {
+                                    <span class="badge bg-danger">Fail</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">—</span>
+                                }
+                            </td>
+                            <td class="text-end">BHD @e.EnrollmentFee</td>
+                            <td class="text-end">
+                                @if (e.Status != "Completed" && e.Status != "Dropped")
+                                {
+                                    <form asp-action="Drop" asp-route-id="@e.Id" method="post"
+                                          onsubmit="return confirm('Are you sure you want to drop this enrollment?');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Drop</button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5 class="card-title mb-2">Status Timeline</h5>
+                <p class="text-muted small mb-3">Enrollment lifecycle:</p>
+                <div class="d-flex flex-wrap gap-2 align-items-center">
+                    <span class="badge bg-info text-dark">Enrolled</span>
+                    <i class="bi bi-arrow-right text-muted"></i>
+                    <span class="badge bg-primary">Confirmed</span>
+                    <i class="bi bi-arrow-right text-muted"></i>
+                    <span class="badge bg-warning text-dark">Attending</span>
+                    <i class="bi bi-arrow-right text-muted"></i>
+                    <span class="badge bg-success">Completed</span>
+                    <span class="text-muted ms-3">or</span>
+                    <span class="badge bg-secondary">Dropped</span>
+                </div>
+            </div>
+        </div>
+    }
+</div>

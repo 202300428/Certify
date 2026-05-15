@@ -1,0 +1,50 @@
+@model IEnumerable<Certify.API.Models.Instructor>
+
+@{
+    ViewData["Title"] = "Instructors";
+}
+
+<div class="container mt-4">
+    <div class="page-header">
+        <div>
+            <h2>Instructors</h2>
+            <p class="subtitle">Trainers available to deliver sessions, with their areas of expertise.</p>
+        </div>
+        <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i> New Instructor</a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">No instructors have been added yet.</div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.Name)</th>
+                        <th>@Html.DisplayNameFor(model => model.Email)</th>
+                        <th>@Html.DisplayNameFor(model => model.ExpertiseAreas)</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td><strong>@item.Name</strong></td>
+                            <td class="text-muted">@item.Email</td>
+                            <td class="small">@item.ExpertiseAreas</td>
+                            <td class="text-end">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Details</a>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

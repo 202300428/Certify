@@ -1,0 +1,42 @@
+@model Certify.API.Models.Instructor
+
+@{
+    ViewData["Title"] = "Delete Instructor";
+}
+
+<div class="container mt-4">
+    <a asp-action="Index" class="back-link"><i class="bi bi-arrow-left"></i> Back to instructors</a>
+
+    <div class="page-header">
+        <div>
+            <h2>Delete Instructor</h2>
+            <p class="subtitle">This action cannot be undone.</p>
+        </div>
+    </div>
+
+    <div class="alert alert-warning">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        Are you sure you want to permanently delete <strong>@Model.Name</strong>?
+    </div>
+
+    <div class="card detail-card mb-3">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Name)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Name)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Email)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Email)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.ExpertiseAreas)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.ExpertiseAreas)</dd>
+            </dl>
+        </div>
+    </div>
+
+    <form asp-action="Delete" class="d-flex gap-2">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger"><i class="bi bi-trash me-1"></i> Delete Instructor</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+    </form>
+</div>

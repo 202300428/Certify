@@ -1,0 +1,51 @@
+@model Certify.API.Models.Room
+
+@{
+    ViewData["Title"] = "New Room";
+}
+
+<div class="container mt-4">
+    <a asp-action="Index" class="back-link"><i class="bi bi-arrow-left"></i> Back to rooms</a>
+
+    <div class="page-header">
+        <div>
+            <h2>Create a Room</h2>
+            <p class="subtitle">Add a training space that can be assigned to scheduled sessions.</p>
+        </div>
+    </div>
+
+    <div class="card form-card">
+        <div class="card-body">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Capacity" class="form-label"></label>
+                    <input asp-for="Capacity" class="form-control" />
+                    <span asp-validation-for="Capacity" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Equipment" class="form-label"></label>
+                    <input asp-for="Equipment" class="form-control" placeholder="e.g. Projector, whiteboard, 24 desks" />
+                    <span asp-validation-for="Equipment" class="text-danger small"></span>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-check2 me-1"></i> Create Room</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

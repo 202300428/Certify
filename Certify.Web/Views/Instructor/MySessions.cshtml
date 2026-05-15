@@ -1,0 +1,110 @@
+@model IEnumerable<Certify.API.Models.ScheduledSession>
+@{
+    ViewData["Title"] = "My Sessions";
+    var now = DateTime.UtcNow;
+    var upcoming = Model.Count(s => s.StartDateTime > now);
+    var inProgress = Model.Count(s => s.StartDateTime <= now && now <= s.EndDateTime);
+    var past = Model.Count(s => s.EndDateTime < now);
+}
+
+<div class="container mt-4">
+    <div class="page-header">
+        <div>
+            <h2>My Scheduled Sessions</h2>
+            <p class="subtitle">Sessions you are assigned to teach. Open a roster to record assessment results.</p>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bi bi-calendar-event"></i></div>
+                <div>
+                    <div class="stat-label">Upcoming</div>
+                    <div class="stat-value">@upcoming</div>
+                    <div class="stat-hint">Not started yet</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bi bi-play-circle"></i></div>
+                <div>
+                    <div class="stat-label">In Progress</div>
+                    <div class="stat-value">@inProgress</div>
+                    <div class="stat-hint">Running right now</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bi bi-clock-history"></i></div>
+                <div>
+                    <div class="stat-label">Past</div>
+                    <div class="stat-value">@past</div>
+                    <div class="stat-hint">Completed sessions</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">You have no scheduled sessions yet.</div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Course</th>
+                        <th>Room</th>
+                        <th>Start</th>
+                        <th>End</th>
+                        <th class="text-center">Capacity</th>
+                        <th>Status</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var s in Model)
+                    {
+                        var status = s.EndDateTime < now ? "Past"
+                        : s.StartDateTime <= now && now <= s.EndDateTime ? "In Progress"
+                        : "Upcoming";
+                        var statusClass = status switch
+                        {
+                            "Past" => "bg-secondary",
+                            "In Progress" => "bg-warning text-dark",
+                            "Upcoming" => "bg-info text-dark",
+                            _ => "bg-light text-dark"
+                        };
+                        <tr>
+                            <td>
+                                <strong>@s.Course?.Title</strong><br />
+                                <small class="text-muted">@s.Course?.Category</small>
+                            </td>
+                            <td>@s.Room?.Name</td>
+                            <td>
+                                @s.StartDateTime.ToString("MMM dd, yyyy")<br />
+                                <small class="text-muted">@s.StartDateTime.ToString("HH:mm")</small>
+                            </td>
+                            <td>
+                                @s.EndDateTime.ToString("MMM dd, yyyy")<br />
+                                <small class="text-muted">@s.EndDateTime.ToString("HH:mm")</small>
+                            </td>
+                            <td class="text-center">@s.Capacity</td>
+                            <td><span class="badge @statusClass">@status</span></td>
+                            <td class="text-end">
+                                <a asp-action="Roster" asp-route-sessionId="@s.Id" class="btn btn-sm btn-primary">
+                                    <i class="bi bi-people me-1"></i> View Roster
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

@@ -1,0 +1,114 @@
+@model IEnumerable<Certify.API.Models.Enrollment>
+@{
+    var session = (Certify.API.Models.ScheduledSession)ViewBag.Session;
+    ViewData["Title"] = $"Roster — {session.Course?.Title}";
+}
+
+<div class="container mt-4">
+    <a asp-action="MySessions" class="back-link"><i class="bi bi-arrow-left"></i> Back to my sessions</a>
+
+    <div class="page-header">
+        <div>
+            <h2>@session.Course?.Title</h2>
+            <p class="subtitle">
+                <i class="bi bi-calendar-event me-1"></i>
+                @session.StartDateTime.ToString("MMM dd, yyyy HH:mm") &ndash; @session.EndDateTime.ToString("HH:mm")
+            </p>
+        </div>
+        <a asp-action="MySessions" class="btn btn-outline-secondary">Back to My Sessions</a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">No trainees are enrolled in this session yet.</div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Trainee</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Result</th>
+                        <th class="text-end">Record Assessment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var rowNum = 1;
+                    }
+                    @foreach (var e in Model)
+                    {
+                        <tr>
+                            <td>@(rowNum++)</td>
+                            <td><strong>@e.Trainee?.FullName</strong></td>
+                            <td class="text-muted">@e.Trainee?.Email</td>
+                            <td>
+                                @{
+                                    var statusClass = e.Status switch
+                                    {
+                                        "Enrolled" => "bg-info text-dark",
+                                        "Confirmed" => "bg-primary",
+                                        "Attending" => "bg-warning text-dark",
+                                        "Completed" => "bg-success",
+                                        "Dropped" => "bg-secondary",
+                                        _ => "bg-light text-dark"
+                                    };
+                                }
+                                <span class="badge @statusClass">@e.Status</span>
+                            </td>
+                            <td>
+                                @if (e.Result == "Pass")
+                                {
+                                    <span class="badge bg-success">Pass</span>
+                                }
+                                else if (e.Result == "Fail")
+                                {
+                                    <span class="badge bg-danger">Fail</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Not recorded</span>
+                                }
+                            </td>
+                            <td class="text-end">
+                                @if (e.Status == "Completed")
+                                {
+                                    <small class="text-muted">Already recorded</small>
+                                }
+                                else
+                                {
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <form asp-action="RecordResult" method="post" class="d-inline me-1"
+                                              onsubmit="return confirm('Record PASS for @e.Trainee?.FullName?');">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="enrollmentId" value="@e.Id" />
+                                            <input type="hidden" name="result" value="Pass" />
+                                            <button type="submit" class="btn btn-success btn-sm">Pass</button>
+                                        </form>
+                                        <form asp-action="RecordResult" method="post" class="d-inline"
+                                              onsubmit="return confirm('Record FAIL for @e.Trainee?.FullName?');">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="enrollmentId" value="@e.Id" />
+                                            <input type="hidden" name="result" value="Fail" />
+                                            <button type="submit" class="btn btn-danger btn-sm">Fail</button>
+                                        </form>
+                                    </div>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="alert alert-info mt-3 small">
+            <i class="bi bi-info-circle me-2"></i>
+            <strong>Note:</strong> Recording a "Pass" automatically checks if the trainee has completed all required courses
+            in a certification track. If so, a certificate will be issued and the trainee will be notified.
+        </div>
+    }
+</div>
