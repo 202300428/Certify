@@ -1,0 +1,26 @@
+@model ReportErrorViewModel
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="container">
+    <div class="page-header">
+        <div>
+            <h1>@Model.Title</h1>
+            <p class="subtitle">The reporting application could not load this view.</p>
+        </div>
+    </div>
+
+    <div class="alert alert-danger">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        @Model.Message
+        @if (Model.StatusCode.HasValue)
+        {
+            <span class="ms-2 text-muted">HTTP @Model.StatusCode</span>
+        }
+    </div>
+
+    <a asp-action="Index" class="btn btn-primary">
+        <i class="bi bi-speedometer2 me-1"></i> Back to dashboard
+    </a>
+</div>

@@ -1,0 +1,122 @@
+@model ReportDashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container">
+    <div class="page-header">
+        <div>
+            <h1>Reporting Dashboard</h1>
+            <p class="subtitle">Operational overview for training coordination.</p>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-md-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bi bi-journal-bookmark"></i></div>
+                <div>
+                    <div class="stat-label">Courses</div>
+                    <div class="stat-value">@Model.Summary.TotalCourses</div>
+                    <div class="stat-hint">Catalog titles</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bi bi-calendar-event"></i></div>
+                <div>
+                    <div class="stat-label">Sessions</div>
+                    <div class="stat-value">@Model.Summary.TotalSessions</div>
+                    <div class="stat-hint">Scheduled classes</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bi bi-people"></i></div>
+                <div>
+                    <div class="stat-label">Enrollments</div>
+                    <div class="stat-value">@Model.Summary.ActiveEnrollments</div>
+                    <div class="stat-hint">@Model.Summary.TotalEnrollments total records</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bi bi-patch-check"></i></div>
+                <div>
+                    <div class="stat-label">Certifications</div>
+                    <div class="stat-value">@Model.Summary.TotalCertifications</div>
+                    <div class="stat-hint">Eligible or issued</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bi bi-cash-stack"></i></div>
+                <div>
+                    <div class="stat-label">Revenue Collected</div>
+                    <div class="stat-value">BHD @Model.Summary.RevenueCollected.ToString("N2")</div>
+                    <div class="stat-hint">Completed payment records</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bi bi-exclamation-diamond"></i></div>
+                <div>
+                    <div class="stat-label">Outstanding Revenue</div>
+                    <div class="stat-value">BHD @Model.Summary.RevenueOutstanding.ToString("N2")</div>
+                    <div class="stat-hint">Billed fees minus collected payments</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-header">
+        <div>
+            <h2 class="h4">Operational reports</h2>
+            <p class="subtitle">Read-only views retrieved from secured API endpoints.</p>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-md-6 col-xl-3">
+            <a class="report-card report-link" asp-action="Enrollments">
+                <div>
+                    <strong>Enrollment Statistics</strong>
+                    <div class="text-muted small">Course, category, status, fill rate</div>
+                </div>
+                <span class="report-link-icon"><i class="bi bi-arrow-right"></i></span>
+            </a>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <a class="report-card report-link" asp-action="InstructorWorkload">
+                <div>
+                    <strong>Instructor Workload</strong>
+                    <div class="text-muted small">Sessions, hours, utilization</div>
+                </div>
+                <span class="report-link-icon"><i class="bi bi-arrow-right"></i></span>
+            </a>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <a class="report-card report-link" asp-action="CertificationCompletion">
+                <div>
+                    <strong>Certification Completion</strong>
+                    <div class="text-muted small">Track eligibility and issue rates</div>
+                </div>
+                <span class="report-link-icon"><i class="bi bi-arrow-right"></i></span>
+            </a>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <a class="report-card report-link" asp-action="Revenue">
+                <div>
+                    <strong>Revenue Position</strong>
+                    <div class="text-muted small">Collected and outstanding balances</div>
+                </div>
+                <span class="report-link-icon"><i class="bi bi-arrow-right"></i></span>
+            </a>
+        </div>
+    </div>
+</div>

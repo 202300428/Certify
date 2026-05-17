@@ -1,0 +1,119 @@
+@model RevenueReportModel
+@{
+    ViewData["Title"] = "Revenue";
+}
+
+<div class="container">
+    <div class="page-header">
+        <div>
+            <h1>Revenue</h1>
+            <p class="subtitle">Collected payments and outstanding trainee balances.</p>
+        </div>
+    </div>
+
+    <form method="get" class="filter-bar">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label for="from" class="form-label">From</label>
+                <input id="from" name="from" type="date" class="form-control" value="@(Model.From?.ToString("yyyy-MM-dd"))" />
+            </div>
+            <div class="col-md-4">
+                <label for="to" class="form-label">To</label>
+                <input id="to" name="to" type="date" class="form-control" value="@(Model.To?.ToString("yyyy-MM-dd"))" />
+            </div>
+            <div class="col-md-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-funnel me-1"></i> Filter</button>
+                <a asp-action="Revenue" class="btn btn-outline-secondary"><i class="bi bi-x-circle me-1"></i> Clear</a>
+            </div>
+        </div>
+    </form>
+
+    <div class="row g-3 mb-3">
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bi bi-receipt"></i></div>
+                <div>
+                    <div class="stat-label">Billed</div>
+                    <div class="stat-value">BHD @Model.TotalBilled.ToString("N2")</div>
+                    <div class="stat-hint">Non-dropped enrollment fees</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bi bi-cash-stack"></i></div>
+                <div>
+                    <div class="stat-label">Collected</div>
+                    <div class="stat-value">BHD @Model.TotalCollected.ToString("N2")</div>
+                    <div class="stat-hint">Completed payments</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bi bi-exclamation-diamond"></i></div>
+                <div>
+                    <div class="stat-label">Outstanding</div>
+                    <div class="stat-value">BHD @Model.TotalOutstanding.ToString("N2")</div>
+                    <div class="stat-hint">Grouped by trainee</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (!Model.Rows.Any())
+    {
+        <div class="empty-state">
+            <i class="bi bi-info-circle me-2"></i>No revenue data matches the selected filters.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Trainee</th>
+                        <th class="text-end">Billed</th>
+                        <th class="text-end">Collected</th>
+                        <th class="text-end">Outstanding</th>
+                        <th>Collection rate</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var row in Model.Rows)
+                    {
+                        <tr>
+                            <td>
+                                <strong>@row.TraineeName</strong>
+                                <div class="text-muted small">@row.Email</div>
+                            </td>
+                            <td class="text-end">BHD @row.Billed.ToString("N2")</td>
+                            <td class="text-end money-positive">BHD @row.Collected.ToString("N2")</td>
+                            <td class="text-end @(row.HasOutstandingBalance ? "money-warning" : "money-positive")">BHD @row.Outstanding.ToString("N2")</td>
+                            <td style="min-width: 170px;">
+                                <div class="d-flex justify-content-between small mb-1">
+                                    <span>@row.CollectionRatePercent.ToString("N1")%</span>
+                                </div>
+                                <div class="progress" role="progressbar" aria-label="Collection rate" aria-valuenow="@row.CollectionRatePercent" aria-valuemin="0" aria-valuemax="100">
+                                    <div class="progress-bar" style="width: @Math.Min(row.CollectionRatePercent, 100).ToString("N1")%"></div>
+                                </div>
+                            </td>
+                            <td>
+                                @if (row.HasOutstandingBalance)
+                                {
+                                    <span class="badge text-bg-warning">Outstanding</span>
+                                }
+                                else
+                                {
+                                    <span class="badge text-bg-success">Settled</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

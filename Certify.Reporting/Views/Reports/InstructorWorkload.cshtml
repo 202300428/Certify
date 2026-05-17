@@ -1,0 +1,81 @@
+@model InstructorWorkloadReportModel
+@{
+    ViewData["Title"] = "Instructor Workload";
+}
+
+<div class="container">
+    <div class="page-header">
+        <div>
+            <h1>Instructor Workload</h1>
+            <p class="subtitle">Scheduled teaching hours and class utilization by instructor.</p>
+        </div>
+    </div>
+
+    <form method="get" class="filter-bar">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label for="from" class="form-label">From</label>
+                <input id="from" name="from" type="date" class="form-control" value="@(Model.From?.ToString("yyyy-MM-dd"))" />
+            </div>
+            <div class="col-md-4">
+                <label for="to" class="form-label">To</label>
+                <input id="to" name="to" type="date" class="form-control" value="@(Model.To?.ToString("yyyy-MM-dd"))" />
+            </div>
+            <div class="col-md-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-funnel me-1"></i> Filter</button>
+                <a asp-action="InstructorWorkload" class="btn btn-outline-secondary"><i class="bi bi-x-circle me-1"></i> Clear</a>
+            </div>
+        </div>
+    </form>
+
+    @if (!Model.Rows.Any())
+    {
+        <div class="empty-state">
+            <i class="bi bi-info-circle me-2"></i>No scheduled instructor workload matches the selected filters.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Instructor</th>
+                        <th>Courses</th>
+                        <th class="text-end">Sessions</th>
+                        <th class="text-end">Hours</th>
+                        <th class="text-end">Enrollments</th>
+                        <th>Utilization</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var row in Model.Rows)
+                    {
+                        <tr>
+                            <td>
+                                <strong>@row.InstructorName</strong>
+                                <div class="text-muted small">@row.Email</div>
+                                @if (!string.IsNullOrWhiteSpace(row.ExpertiseAreas))
+                                {
+                                    <div class="text-muted small">@row.ExpertiseAreas</div>
+                                }
+                            </td>
+                            <td>@string.Join(", ", row.Courses)</td>
+                            <td class="text-end">@row.SessionCount</td>
+                            <td class="text-end">@row.TeachingHours.ToString("N1")</td>
+                            <td class="text-end">@row.EnrollmentCount / @row.TotalCapacity</td>
+                            <td style="min-width: 170px;">
+                                <div class="d-flex justify-content-between small mb-1">
+                                    <span>@row.UtilizationPercent.ToString("N1")%</span>
+                                </div>
+                                <div class="progress" role="progressbar" aria-label="Utilization" aria-valuenow="@row.UtilizationPercent" aria-valuemin="0" aria-valuemax="100">
+                                    <div class="progress-bar" style="width: @Math.Min(row.UtilizationPercent, 100).ToString("N1")%"></div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

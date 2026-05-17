@@ -1,0 +1,90 @@
+@model CertificationCompletionReportModel
+@{
+    ViewData["Title"] = "Certification Completion";
+}
+
+<div class="container">
+    <div class="page-header">
+        <div>
+            <h1>Certification Completion</h1>
+            <p class="subtitle">Eligibility and certificate issue progress across certification tracks.</p>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-3">
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bi bi-person-lines-fill"></i></div>
+                <div>
+                    <div class="stat-label">Trainees</div>
+                    <div class="stat-value">@Model.TotalTrainees</div>
+                    <div class="stat-hint">Registered trainee accounts</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bi bi-diagram-3"></i></div>
+                <div>
+                    <div class="stat-label">Tracks</div>
+                    <div class="stat-value">@Model.Rows.Count</div>
+                    <div class="stat-hint">Certification pathways</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bi bi-award"></i></div>
+                <div>
+                    <div class="stat-label">Certifications</div>
+                    <div class="stat-value">@Model.Rows.Sum(r => r.TotalCertifications)</div>
+                    <div class="stat-hint">Eligible or issued certificates</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (!Model.Rows.Any())
+    {
+        <div class="empty-state">
+            <i class="bi bi-info-circle me-2"></i>No certification tracks are available.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Track</th>
+                        <th class="text-end">Required courses</th>
+                        <th class="text-end">Eligible</th>
+                        <th class="text-end">Issued</th>
+                        <th class="text-end">Total</th>
+                        <th>Completion rate</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var row in Model.Rows)
+                    {
+                        <tr>
+                            <td><strong>@row.TrackName</strong></td>
+                            <td class="text-end">@row.RequiredCourseCount</td>
+                            <td class="text-end">@row.EligibleCount</td>
+                            <td class="text-end">@row.IssuedCount</td>
+                            <td class="text-end">@row.TotalCertifications</td>
+                            <td style="min-width: 170px;">
+                                <div class="d-flex justify-content-between small mb-1">
+                                    <span>@row.CompletionRatePercent.ToString("N1")%</span>
+                                </div>
+                                <div class="progress" role="progressbar" aria-label="Completion rate" aria-valuenow="@row.CompletionRatePercent" aria-valuemin="0" aria-valuemax="100">
+                                    <div class="progress-bar" style="width: @Math.Min(row.CompletionRatePercent, 100).ToString("N1")%"></div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

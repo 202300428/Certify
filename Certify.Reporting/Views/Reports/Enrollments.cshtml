@@ -1,0 +1,93 @@
+@model EnrollmentReportModel
+@{
+    ViewData["Title"] = "Enrollment Statistics";
+}
+
+<div class="container">
+    <div class="page-header">
+        <div>
+            <h1>Enrollment Statistics</h1>
+            <p class="subtitle">Enrollment volume, status movement, and seat fill rate by course.</p>
+        </div>
+    </div>
+
+    <form method="get" class="filter-bar">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label for="from" class="form-label">From</label>
+                <input id="from" name="from" type="date" class="form-control" value="@(Model.From?.ToString("yyyy-MM-dd"))" />
+            </div>
+            <div class="col-md-3">
+                <label for="to" class="form-label">To</label>
+                <input id="to" name="to" type="date" class="form-control" value="@(Model.To?.ToString("yyyy-MM-dd"))" />
+            </div>
+            <div class="col-md-3">
+                <label for="category" class="form-label">Category</label>
+                <select id="category" name="category" class="form-select">
+                    <option value="">All categories</option>
+                    @foreach (var category in Model.Categories)
+                    {
+                        <option value="@category" selected="@(Model.Category == category)">@category</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3 d-flex gap-2">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-funnel me-1"></i> Filter</button>
+                <a asp-action="Enrollments" class="btn btn-outline-secondary"><i class="bi bi-x-circle me-1"></i> Clear</a>
+            </div>
+        </div>
+    </form>
+
+    @if (!Model.Rows.Any())
+    {
+        <div class="empty-state">
+            <i class="bi bi-info-circle me-2"></i>No enrollment data matches the selected filters.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Course</th>
+                        <th>Category</th>
+                        <th class="text-end">Sessions</th>
+                        <th class="text-end">Enrollments</th>
+                        <th class="text-end">Completed</th>
+                        <th class="text-end">Passed</th>
+                        <th class="text-end">Dropped</th>
+                        <th>Fill rate</th>
+                        <th class="text-end">Fees billed</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var row in Model.Rows)
+                    {
+                        <tr>
+                            <td>
+                                <strong>@row.CourseTitle</strong>
+                                <div class="text-muted small">@row.ConfirmedCount confirmed, @row.AttendingCount attending</div>
+                            </td>
+                            <td>@row.Category</td>
+                            <td class="text-end">@row.SessionCount</td>
+                            <td class="text-end">@row.EnrollmentCount / @row.TotalCapacity</td>
+                            <td class="text-end">@row.CompletedCount</td>
+                            <td class="text-end">@row.PassedCount</td>
+                            <td class="text-end">@row.DroppedCount</td>
+                            <td style="min-width: 150px;">
+                                <div class="d-flex justify-content-between small mb-1">
+                                    <span>@row.FillRatePercent.ToString("N1")%</span>
+                                </div>
+                                <div class="progress" role="progressbar" aria-label="Fill rate" aria-valuenow="@row.FillRatePercent" aria-valuemin="0" aria-valuemax="100">
+                                    <div class="progress-bar" style="width: @Math.Min(row.FillRatePercent, 100).ToString("N1")%"></div>
+                                </div>
+                            </td>
+                            <td class="text-end">BHD @row.FeesBilled.ToString("N2")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
