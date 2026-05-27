@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Certify.API.Migrations
 {
     [DbContext(typeof(CertifyDbContext))]
-    [Migration("20260513141835_InitialCreate")]
+    [Migration("20260527152435_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -293,8 +293,8 @@ namespace Certify.API.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("EntityType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<bool>("IsRead")
                         .ValueGeneratedOnAdd()

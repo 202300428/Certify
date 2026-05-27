@@ -176,6 +176,8 @@ public class CertifyDbContext(DbContextOptions<CertifyDbContext> options) : Iden
             entity.Property(n => n.Message).IsRequired().HasMaxLength(500);
             entity.Property(n => n.CreatedAt).IsRequired();
             entity.Property(n => n.IsRead).HasDefaultValue(false);
+            entity.Property(n => n.EntityType).HasMaxLength(100).IsRequired(false);
+            entity.Property(n => n.EntityId).IsRequired(false);
         });
 
         builder.Entity<IdentityRole>().HasData(

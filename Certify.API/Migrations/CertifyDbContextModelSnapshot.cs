@@ -290,8 +290,8 @@ namespace Certify.API.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("EntityType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<bool>("IsRead")
                         .ValueGeneratedOnAdd()
