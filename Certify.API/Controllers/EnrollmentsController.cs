@@ -40,7 +40,7 @@ public class EnrollmentsController(CertifyDbContext context) : ControllerBase
 
         var enrollment = new Enrollment
         {
-            TraineeId = userId,
+            TraineeId = userId!,
             ScheduledSessionId = sessionId,
             EnrollmentFee = session.Course.Fee,
             Status = "Enrolled",
@@ -67,5 +67,63 @@ public class EnrollmentsController(CertifyDbContext context) : ControllerBase
             .ThenInclude(ss => ss.Course)
             .ToListAsync();
         return Ok(enrollments);
+    }
+
+    /// <summary>Gets all enrollments across all trainees. Restricted to Training Coordinators.</summary>
+    [HttpGet]
+    [Authorize(Roles = "TrainingCoordinator")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAll([FromQuery] int? sessionId, [FromQuery] string? status)
+    {
+        var query = context.Enrollments
+            .AsNoTracking()
+            .Include(e => e.Trainee)
+            .Include(e => e.ScheduledSession)
+                .ThenInclude(ss => ss.Course)
+            .AsQueryable();
+
+        if (sessionId.HasValue)
+            query = query.Where(e => e.ScheduledSessionId == sessionId.Value);
+
+        if (!string.IsNullOrWhiteSpace(status))
+            query = query.Where(e => e.Status == status);
+
+        return Ok(await query.OrderByDescending(e => e.Id).ToListAsync());
+    }
+
+    /// <summary>Updates enrollment status and result. Restricted to Training Coordinators.</summary>
+    [HttpPut("{id}")]
+    [Authorize(Roles = "TrainingCoordinator")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Update(int id, [FromBody] Certify.API.Models.Dto.Enrollments.UpdateEnrollmentDto dto)
+    {
+        var enrollment = await context.Enrollments.FindAsync(id);
+        if (enrollment == null) return NotFound();
+
+        enrollment.Status = dto.Status;
+        if (dto.Result != null) enrollment.Result = dto.Result;
+
+        await context.SaveChangesAsync();
+        return Ok(enrollment);
+    }
+
+    /// <summary>Drops/cancels an enrollment. Restricted to the owning trainee.</summary>
+    [HttpPost("{id}/drop")]
+    [Authorize(Roles = "Trainee")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> Drop(int id)
+    {
+        var userId = User.FindFirstValue(System.Security.Claims.ClaimTypes.NameIdentifier);
+        var enrollment = await context.Enrollments.FindAsync(id);
+
+        if (enrollment == null) return NotFound();
+        if (enrollment.TraineeId != userId) return Forbid();
+
+        enrollment.Status = "Dropped";
+        await context.SaveChangesAsync();
+        return Ok(new { Message = "Enrollment dropped." });
     }
 }
