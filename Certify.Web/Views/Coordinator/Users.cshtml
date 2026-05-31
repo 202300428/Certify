@@ -1,0 +1,80 @@
+@model IEnumerable<Certify.API.Models.ApplicationUser>
+@{
+    ViewData["Title"] = "User Management";
+    var userRoles = (Dictionary<string, IList<string>>)ViewBag.Roles;
+    var allRoles = (string[])ViewBag.AllRoles;
+}
+
+<div class="container mt-4">
+    <div class="page-header">
+        <div>
+            <h2>User Management</h2>
+            <p class="subtitle">View registered users and manage their roles.</p>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">No users found.</div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>CPR</th>
+                        <th>Current Role</th>
+                        <th>Joined</th>
+                        <th class="text-end">Change Role</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var u in Model)
+                    {
+                        var roles = userRoles != null && userRoles.ContainsKey(u.Id)
+                            ? userRoles[u.Id]
+                            : new List<string>();
+                        var currentRole = roles.FirstOrDefault() ?? "None";
+
+                        <tr>
+                            <td><strong>@u.FullName</strong></td>
+                            <td class="text-muted">@u.Email</td>
+                            <td>@(u.CPR ?? "—")</td>
+                            <td>
+                                @{
+                                    var roleClass = currentRole switch
+                                    {
+                                        "TrainingCoordinator" => "bg-danger",
+                                        "Instructor" => "bg-warning text-dark",
+                                        "Trainee" => "bg-info text-dark",
+                                        _ => "bg-light text-dark"
+                                    };
+                                }
+                                <span class="badge @roleClass">@currentRole</span>
+                            </td>
+                            <td class="text-muted">@u.CreatedAt.ToString("MMM dd, yyyy")</td>
+                            <td class="text-end">
+                                <form asp-action="SetRole" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="userId" value="@u.Id" />
+                                    <div class="input-group input-group-sm">
+                                        <select name="role" class="form-select" style="max-width:180px;">
+                                            @foreach (var r in allRoles)
+                                            {
+                                                <option value="@r" selected="@(r == currentRole)">@r</option>
+                                            }
+                                        </select>
+                                        <button type="submit" class="btn btn-primary">Set</button>
+                                    </div>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

@@ -33,6 +33,22 @@ public class EnrollmentsController : Controller
         return View(enrollments);
     }
 
+    public async Task<IActionResult> Upcoming()
+    {
+        var userId = _userManager.GetUserId(User);
+        var enrollments = await _db.Enrollments
+            .Include(e => e.ScheduledSession).ThenInclude(s => s!.Course)
+            .Include(e => e.ScheduledSession).ThenInclude(s => s!.Instructor)
+            .Include(e => e.ScheduledSession).ThenInclude(s => s!.Room)
+            .Where(e => e.TraineeId == userId
+                && e.Status != "Dropped"
+                && e.Status != "Completed"
+                && e.ScheduledSession!.StartDateTime > DateTime.UtcNow)
+            .OrderBy(e => e.ScheduledSession!.StartDateTime)
+            .ToListAsync();
+        return View(enrollments);
+    }
+
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Enroll(int sessionId)
     {
