@@ -1,0 +1,81 @@
+@model IEnumerable<Certify.API.Models.Certification>
+@{
+    ViewData["Title"] = "My Certifications";
+    var passedCourseIds = (IEnumerable<int>)ViewBag.PassedCourseIds;
+    var trackCourses = (Dictionary<int, List<Certify.API.Models.Course>>)ViewBag.TrackCourses;
+}
+
+<div class="container mt-4">
+    <div class="page-header">
+        <div>
+            <h2>My Certifications</h2>
+            <p class="subtitle">Industry-recognized credentials earned by completing certification tracks.</p>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle me-2"></i>
+            You haven't earned any certifications yet. Complete all required courses in a track to unlock a certification.
+            <a asp-controller="Catalog" asp-action="Index" class="alert-link">Browse the catalog</a> to get started.
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var cert in Model)
+            {
+                var track = cert.CertificationTrack;
+                var requiredCourses = trackCourses != null && trackCourses.ContainsKey(track.Id)
+                    ? trackCourses[track.Id]
+                    : new List<Certify.API.Models.Course>();
+
+                <div class="col-lg-6">
+                    <div class="card certification-card h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <h5 class="card-title mb-1">@track.Name</h5>
+                                    <span class="badge bg-success">@cert.Status</span>
+                                </div>
+                                <span class="cert-number">@cert.CertificateNumber</span>
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(track.Description))
+                            {
+                                <p class="text-muted small mb-3">@track.Description</p>
+                            }
+
+                            <dl class="row mb-3">
+                                <dt class="col-sm-4">Issued</dt>
+                                <dd class="col-sm-8">@cert.IssueDate.ToString("MMMM dd, yyyy")</dd>
+                            </dl>
+
+                            <h6 class="mb-2">Required Courses</h6>
+                            <ul class="list-unstyled mb-0">
+                                @foreach (var course in requiredCourses)
+                                {
+                                    var isPassed = passedCourseIds != null && passedCourseIds.Contains(course.Id);
+                                    <li>
+                                        <i class="bi @(isPassed ? "bi-check2-circle text-success" : "bi-circle text-muted") me-1"></i>
+                                        <span class="@(isPassed ? "" : "text-muted")">@course.Title</span>
+                                        @if (!isPassed)
+                                        {
+                                            <small class="text-muted">(not completed)</small>
+                                        }
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <a asp-controller="Lookup" asp-action="Index" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-patch-check me-1"></i> Verify
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

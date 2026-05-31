@@ -55,11 +55,29 @@
             </a>
         </div>
         <div class="col-md-6 col-lg-4">
+            <a asp-controller="Enrollments" asp-action="Upcoming" class="action-tile">
+                <div class="action-icon"><i class="bi bi-calendar-check"></i></div>
+                <div>
+                    <h6>Upcoming Sessions</h6>
+                    <small>Your scheduled training</small>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-4">
             <a asp-controller="Enrollments" asp-action="My" class="action-tile">
                 <div class="action-icon"><i class="bi bi-journal-text"></i></div>
                 <div>
                     <h6>My Enrollments</h6>
                     <small>View progress &amp; drop courses</small>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <a asp-controller="Trainee" asp-action="Certifications" class="action-tile">
+                <div class="action-icon"><i class="bi bi-patch-check"></i></div>
+                <div>
+                    <h6>Certifications</h6>
+                    <small>View earned credentials</small>
                 </div>
             </a>
         </div>
