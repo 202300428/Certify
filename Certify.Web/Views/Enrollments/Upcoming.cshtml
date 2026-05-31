@@ -1,0 +1,91 @@
+@model IEnumerable<Certify.API.Models.Enrollment>
+@{
+    ViewData["Title"] = "Upcoming Sessions";
+}
+
+<div class="container mt-4">
+    <div class="page-header">
+        <div>
+            <h2>Upcoming Sessions</h2>
+            <p class="subtitle">Your scheduled training sessions that are coming up.</p>
+        </div>
+        <a asp-controller="Catalog" asp-action="Index" class="btn btn-primary"><i class="bi bi-grid me-1"></i> Browse Catalog</a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle me-2"></i>
+            You have no upcoming sessions.
+            <a asp-controller="Catalog" asp-action="Index" class="alert-link">Browse the catalog</a> to enroll in a course.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Course</th>
+                        <th>Instructor</th>
+                        <th>Room</th>
+                        <th>Starts</th>
+                        <th>Ends</th>
+                        <th>Status</th>
+                        <th>Payment</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var e in Model)
+                    {
+                        <tr>
+                            <td>
+                                <strong>@e.ScheduledSession?.Course?.Title</strong><br />
+                                <small class="text-muted">@e.ScheduledSession?.Course?.Category</small>
+                            </td>
+                            <td>@e.ScheduledSession?.Instructor?.Name</td>
+                            <td>@e.ScheduledSession?.Room?.Name</td>
+                            <td>
+                                @e.ScheduledSession?.StartDateTime.ToString("MMM dd, yyyy")<br />
+                                <small class="text-muted">@e.ScheduledSession?.StartDateTime.ToString("HH:mm")</small>
+                            </td>
+                            <td>@e.ScheduledSession?.EndDateTime.ToString("HH:mm")</td>
+                            <td>
+                                @{
+                                    var statusClass = e.Status switch
+                                    {
+                                        "Enrolled" => "bg-info text-dark",
+                                        "Confirmed" => "bg-primary",
+                                        "Attending" => "bg-warning text-dark",
+                                        _ => "bg-light text-dark"
+                                    };
+                                }
+                                <span class="badge @statusClass">@e.Status</span>
+                            </td>
+                            <td>
+                                @{
+                                    var payClass = e.PaymentStatus switch
+                                    {
+                                        "Paid" => "bg-success",
+                                        "Partial" => "bg-warning text-dark",
+                                        "Pending" => "bg-danger",
+                                        _ => "bg-light text-dark"
+                                    };
+                                }
+                                <span class="badge @payClass">@e.PaymentStatus</span>
+                            </td>
+                            <td class="text-end">
+                                <form asp-action="Drop" asp-route-id="@e.Id" method="post"
+                                      onsubmit="return confirm('Are you sure you want to drop this enrollment?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Drop</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
