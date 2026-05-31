@@ -1,0 +1,65 @@
+@model Certify.Web.Models.ProfileViewModel
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<div class="container mt-4">
+    <div class="page-header">
+        <div>
+            <h2>My Profile</h2>
+            <p class="subtitle">Manage your personal information and account settings.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card form-card">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Personal Information</h5>
+                    <form asp-action="Profile" method="post">
+                        @Html.AntiForgeryToken()
+                        <div asp-validation-summary="All" class="alert alert-danger py-2 validation-summary-valid"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label"></label>
+                            <input asp-for="Email" class="form-control" readonly />
+                            <small class="text-muted">Email cannot be changed.</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="FullName" class="form-label"></label>
+                            <input asp-for="FullName" class="form-control" required />
+                            <span asp-validation-for="FullName" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="CPR" class="form-label"></label>
+                            <input asp-for="CPR" class="form-control" />
+                            <span asp-validation-for="CPR" class="text-danger small"></span>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card form-card">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Security</h5>
+                    <p class="text-muted small">Update your password to keep your account secure.</p>
+                    <a asp-action="ChangePassword" class="btn btn-outline-primary">
+                        <i class="bi bi-shield-lock me-1"></i> Change Password
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

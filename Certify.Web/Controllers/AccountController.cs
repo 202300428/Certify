@@ -87,4 +87,65 @@ public class AccountController : Controller
 
     [HttpGet]
     public IActionResult AccessDenied() => View();
+
+    [HttpGet, Authorize]
+    public async Task<IActionResult> Profile()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null) return RedirectToAction("Login");
+        var model = new ProfileViewModel
+        {
+            Email = user.Email ?? string.Empty,
+            FullName = user.FullName,
+            CPR = user.CPR
+        };
+        return View(model);
+    }
+
+    [HttpPost, ValidateAntiForgeryToken, Authorize]
+    public async Task<IActionResult> Profile(ProfileViewModel model)
+    {
+        if (!ModelState.IsValid) return View(model);
+
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null) return RedirectToAction("Login");
+
+        user.FullName = model.FullName;
+        user.CPR = model.CPR;
+
+        var result = await _userManager.UpdateAsync(user);
+        if (result.Succeeded)
+        {
+            TempData["Success"] = "Profile updated.";
+            return RedirectToAction(nameof(Profile));
+        }
+
+        foreach (var err in result.Errors)
+            ModelState.AddModelError(string.Empty, err.Description);
+        return View(model);
+    }
+
+    [HttpGet, Authorize]
+    public IActionResult ChangePassword() => View(new ChangePasswordViewModel());
+
+    [HttpPost, ValidateAntiForgeryToken, Authorize]
+    public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+    {
+        if (!ModelState.IsValid) return View(model);
+
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null) return RedirectToAction("Login");
+
+        var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+        if (result.Succeeded)
+        {
+            await _signInManager.RefreshSignInAsync(user);
+            TempData["Success"] = "Password changed.";
+            return RedirectToAction(nameof(Profile));
+        }
+
+        foreach (var err in result.Errors)
+            ModelState.AddModelError(string.Empty, err.Description);
+        return View(model);
+    }
 }
